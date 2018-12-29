@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vending.dto.MachineDTO;
 import vending.dto.MachineState;
 import vending.dto.SensorDTO;
+import vending.dto.SensorStorage;
 import vending.service.CurrentStateService;
 import vending.service.SensorActuator;
 
@@ -43,12 +45,34 @@ class CurrentStateServerTest {
 
 	@Test
 	void handleSensorDataTest() {
-		System.out.println("TEST:START");
 		List<MachineDTO> machines = TestDataFactory.getMachinesData(2, 2);
 		machines.forEach(machine -> machine.getSensors().forEach(this::sendSensorData));
 		Map<Integer, MachineState> machinesStates = this.currentStateService.getMachinesState();
-		this.sensorActuator.run();
-		System.out.println("TEST:END");
+//		this.sensorActuator.run();
+		assertEquals(machinesStates.keySet().size(), 2);
+		assertEquals(machinesStates.get(machines.get(0).getMachineId()).getSensors().size(), 2);
+		testMachiesEquals(machines, machinesStates);
+	}
+
+	private void testMachiesEquals(List<MachineDTO> machines, Map<Integer, MachineState> machinesStates) {
+		machines.forEach(machine -> {
+			MachineState expMachine = machinesStates.get(machine.getMachineId());
+			assertNotNull(expMachine);
+			assertEquals(expMachine.getMachineId(), machine.getMachineId());
+			
+			testMachineSensors(machine, expMachine);
+		});
+	}
+
+	private void testMachineSensors(MachineDTO machine, MachineState expMachine) {
+		List<SensorDTO> expSensors = expMachine.getSensors().values().stream()
+				.map(s -> s.getSensor())
+				.collect(Collectors.toList());
+		assertNotNull(expSensors);
+		List<SensorDTO> sensors = machine.getSensors();
+		sensors.forEach(sensor -> {
+			assertTrue(expSensors.contains(sensor));
+		});
 	}
 
 	private void sendSensorData(SensorDTO sensor) {

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import vending.dto.SensorDTO;
 import vending.dto.SensorStorage;
 import vending.repository.StateRepository;
 
+@RefreshScope
 @Service
 @EnableBinding(IDispatcher.class)
 public class SensorActuator extends Thread {
