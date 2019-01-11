@@ -11,7 +11,11 @@ import lombok.ToString;
 
 @Component
 @ConfigurationProperties("vms")
-@Getter @Setter @NoArgsConstructor @EqualsAndHashCode @ToString
+@Getter
+@Setter
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class CurrentStateParams {
   int actuateFrequency;
   int sensorResponseInterval;

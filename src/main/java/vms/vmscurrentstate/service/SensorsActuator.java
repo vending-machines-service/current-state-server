@@ -34,16 +34,6 @@ public class SensorsActuator extends Thread {
   StateRepository stateRepo;
   @Autowired
   CurrentStateParams params;
-  
-
-  // @Value("${actuateFrequency:2000}")
-  // long actuateFrequency;
-
-  // @Value("${sensorResponseInterval:600000}")
-  // long sensorResponseInterval;
-
-  // @Value("${expirationErrorCode:-1}")
-  // int expirationErrorCode;
 
   public SensorsActuator() {
     setDaemon(true);
@@ -59,7 +49,6 @@ public class SensorsActuator extends Thread {
         e.printStackTrace();
       }
     }
-
   }
 
   /**
@@ -81,6 +70,7 @@ public class SensorsActuator extends Thread {
    */
   private void actuateSensorData(Collection<MachineState> machinesState) {
     for (MachineState machine : machinesState) {
+      this.stateRepo.deleteById(machine.getMachineId());
       this.stateRepo.save(machine.toMachineDTO());
     }
   }

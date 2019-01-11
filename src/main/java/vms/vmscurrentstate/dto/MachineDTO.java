@@ -16,7 +16,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Document(collection = "MachineState")
+@Document(collection = "current_state_machines")
 public class MachineDTO {
   @Id
   Integer machineId;
